@@ -67,6 +67,28 @@ func absDiffInt(x, y int) int {
 	return x - y
 }
 
+// Finds first occurance
+// Could use binary search here
+func findIndex(item int, list []int) int {
+	for i, element := range list {
+		if element == item {
+			return i
+		}
+	}
+	return -1
+}
+
+// assuming is sorted
+func countOccurances(startingIndex int, list []int) int {
+	elem := list[startingIndex]
+	count := 0
+	for i := startingIndex; list[i] == elem; i++ {
+		count++
+	}
+
+	return count
+}
+
 func main() {
 	log.SetFlags(0)
 	log.SetPrefix("DayOne: ")
@@ -77,11 +99,15 @@ func main() {
 	sort.Ints(leftList)
 	sort.Ints(rightList)
 
-	total := 0
-	for i := range leftList {
-		distance := absDiffInt(leftList[i], rightList[i])
+	var total int64
+	total = 0
 
-		total += distance
+	for i := range leftList {
+		indexFound := findIndex(leftList[i], rightList)
+		if indexFound == -1 {
+			continue
+		}
+		total += int64(countOccurances(indexFound, rightList) * leftList[i])
 	}
 
 	fmt.Printf("Total: %d", total)
